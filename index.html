@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تطبيق رسالة التحويل</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); width: 320px; text-align: center; }
+        input, button { width: 90%; padding: 12px; margin: 8px 0; font-size: 16px; border-radius: 12px; border: 1px solid #ccc; }
+        button { background: #007bff; color: white; border: none; cursor: pointer; }
+        button:active { background: #0056b3; }
+        .output { background: #e9ecef; padding: 12px; border-radius: 12px; margin-top: 16px; text-align: right; font-family: monospace; white-space: pre-wrap; word-break: break-word; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <h3>💰 تحويل الأموال</h3>
+    <label>📌 المبلغ المراد تحويله (جنيه)</label>
+    <input type="number" id="amount" value="5000" step="1">
+    
+    <label>⚙️ مصاريف الخدمة (جنيه)</label>
+    <input type="number" id="fee" value="1" step="0.01">
+    
+    <label>📞 رقم المستلم (اختياري)</label>
+    <input type="tel" id="phone" value="01029974213">
+    
+    <button onclick="generateMessage()">📨 إرسال / نسخ الرسالة</button>
+    
+    <div class="output" id="outputMsg">
+        ستظهر الرسالة هنا...
+    </div>
+    <small>اضغط على الرسالة لنسخها ثم الصقها في تطبيق المراسلة</small>
+</div>
+<script>
+    function generateMessage() {
+        let amount = document.getElementById('amount').value;
+        let fee = document.getElementById('fee').value;
+        let phone = document.getElementById('phone').value;
+        
+        if (!amount || amount <= 0) {
+            alert("أدخل مبلغ صحيح");
+            return;
+        }
+        if (fee === "") fee = 0;
+        
+        let message = `تم تحويل ${amount} جنيه لرقم ${phone}\nمصاريف الخدمة ${fee} جنيه . اطلب #9* و0: مزيد`;
+        
+        let outputDiv = document.getElementById('outputMsg');
+        outputDiv.innerText = message;
+        
+        // نسخ النص تلقائياً للحصول على تجربة "إرسال" سريعة
+        navigator.clipboard.writeText(message).then(() => {
+            outputDiv.style.backgroundColor = "#d4edda";
+            setTimeout(() => outputDiv.style.backgroundColor = "#e9ecef", 500);
+        }).catch(() => alert("تم إنشاء الرسالة، يمكنك نسخها يدوياً"));
+    }
+    
+    // الضغط على منطقة النص ينسخها أيضاً
+    document.getElementById('outputMsg').addEventListener('click', function() {
+        let text = this.innerText;
+        if (text && text !== "ستظهر الرسالة هنا...") {
+            navigator.clipboard.writeText(text);
+            this.style.backgroundColor = "#d4edda";
+            setTimeout(() => this.style.backgroundColor = "#e9ecef", 500);
+        }
+    });
+</script>
+</body>
+</html>
